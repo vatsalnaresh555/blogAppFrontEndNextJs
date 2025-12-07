@@ -21,27 +21,18 @@ export default function LoginPage() {
     try {
       const res = await fetch('http://localhost:8080/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-
-        // IMPORTANT: needed to receive HttpOnly cookie
-        credentials: 'include',
-
-        body: JSON.stringify({
-          username,
-          password,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // needed for HttpOnly cookie
+        body: JSON.stringify({ username, password }),
       });
 
       if (!res.ok) {
         const text = await res.text();
+       
         throw new Error(text || 'Login failed');
       }
 
-      // Cookie from backend is now stored automatically.
-
-      router.push('/'); // Redirect to homepage
+       router.push('/posts'); // go home after login
     } catch (err: any) {
       setError(err.message ?? 'Something went wrong');
     } finally {
@@ -50,23 +41,31 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh]">
-      <div className="w-full max-w-md border border-neutral-800 rounded-xl p-6 bg-neutral-900/50 backdrop-blur">
-        <h1 className="text-2xl font-semibold mb-4">Login</h1>
+    <div className="flex min-h-[80vh] items-center justify-center px-4">
+      <div className="w-full max-w-md rounded-2xl border border-neutral-800/70 bg-neutral-900/60 px-6 py-7 shadow-xl shadow-black/30 backdrop-blur">
+        <h1 className="mb-2 text-2xl font-semibold tracking-tight">
+          Welcome back
+        </h1>
+        <p className="mb-5 text-sm text-neutral-400">
+          Log in to continue to your dashboard.
+        </p>
 
         {error && (
-          <div className="mb-4 text-sm text-red-400 bg-red-950/30 border border-red-800 rounded-lg px-3 py-2">
+          <div className="mb-4 rounded-lg border border-red-800/70 bg-red-950/40 px-3 py-2 text-sm text-red-200">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Username */}
-          <div>
-            <label className="block text-sm mb-1">Username</label>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-neutral-200">
+              Username
+            </label>
             <input
               type="text"
-              className="w-full rounded-lg bg-neutral-950 border border-neutral-700 px-3 py-2 text-sm outline-none focus:border-sky-500"
+              placeholder="Enter username"
+              className="w-full rounded-xl border border-neutral-700/70 bg-neutral-900/40 px-3 py-2.5 text-sm text-neutral-50 outline-none shadow-sm placeholder:text-neutral-500 focus:border-sky-400 focus:ring-2 focus:ring-sky-500/60"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
@@ -74,11 +73,14 @@ export default function LoginPage() {
           </div>
 
           {/* Password */}
-          <div>
-            <label className="block text-sm mb-1">Password</label>
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium text-neutral-200">
+              Password
+            </label>
             <input
               type="password"
-              className="w-full rounded-lg bg-neutral-950 border border-neutral-700 px-3 py-2 text-sm outline-none focus:border-sky-500"
+              placeholder="Enter password"
+              className="w-full rounded-xl border border-neutral-700/70 bg-neutral-900/40 px-3 py-2.5 text-sm text-neutral-50 outline-none shadow-sm placeholder:text-neutral-500 focus:border-sky-400 focus:ring-2 focus:ring-sky-500/60"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -89,16 +91,19 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-sky-600 hover:bg-sky-500 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium py-2 mt-2"
+            className="mt-2 w-full rounded-xl bg-sky-500 px-4 py-2.5 text-sm font-medium text-white shadow-md shadow-sky-900/40 transition hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {loading ? 'Logging in…' : 'Login'}
+            {loading ? 'Logging in…' : 'Log in'}
           </button>
         </form>
 
-        <p className="mt-4 text-xs text-neutral-400 text-center">
-          Don&apos;t have an account?{' '}
-          <a href="/register" className="text-sky-400 hover:underline">
-            Register
+        <p className="mt-5 text-center text-xs text-neutral-400">
+          Don’t have an account?{' '}
+          <a
+            href="/register"
+            className="font-medium text-sky-400 hover:text-sky-300 hover:underline"
+          >
+            Create one
           </a>
         </p>
       </div>
